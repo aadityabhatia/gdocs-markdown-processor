@@ -1,0 +1,38 @@
+<project default="build">
+	<property file="build.properties" />
+
+	<target name="git-submodules-init">
+		<exec executable="git" dir=".">
+			<arg line="submodule update --init" />
+		</exec>
+	</target>
+
+	<target name="zip-server-lib" description="Zip python libraries for upload">
+		<zip destfile="${server.lib.zip}" update="true">
+			<fileset dir="${server.lib}" includes="*.py" />
+			<zipfileset dir="${server.lib.markdown}" prefix="markdown" includes="**/*.py" />
+		</zip>
+	</target>
+
+	<target name="devserver-appengine" depends="zip-server-lib" description="Runs GWT development server">
+		<exec executable="${appengine.sdk}/dev_appserver.py" dir=".">
+			<arg value="${server.src}" />
+		</exec>
+	</target>
+
+	<target name="build" depends="git-submodules-init, zip-server-lib" description="Prepares for deployment" />
+
+	<target name="deploy-bare">
+		<exec executable="${appengine.sdk}/appcfg.py" dir="." inputstring="${appengine.passwd}">
+			<arg line="-e ${appengine.email} --passin" />
+			<arg line="--version=${appengine.version}" />
+			<arg line="update ${server.src}" />
+		</exec>
+	</target>
+
+	<target name="deploy" depends="clean, build, deploy-bare" />
+
+	<target name="clean" description="Deletes the generated files">
+		<delete file="${server.lib.zip}" failonerror="false" />
+	</target>
+</project>

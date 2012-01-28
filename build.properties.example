@@ -1,0 +1,11 @@
+appengine.sdk = /usr/local/lib/appengine-python-sdk-1.6.1
+# http://googleappengine.googlecode.com/files/google_appengine_1.6.1.zip
+
+appengine.email = developer@example.com
+appengine.passwd = ********
+appengine.version = dev
+
+server.src = server
+server.lib = lib
+server.lib.markdown = lib/Python-Markdown/markdown
+server.lib.zip = server/distlib.zip
